@@ -1,0 +1,52 @@
+namespace: production
+replicaCount: 2
+
+image:
+  repository: 686591366739.dkr.ecr.us-east-1.amazonaws.com/shopmesh/frontend
+  tag: latest
+  pullPolicy: Always
+
+service:
+  port: 80
+
+serviceAccount:
+  create: true
+  roleArn: ""   # frontend does not call AWS APIs directly
+
+config:
+  INTERNAL_ALB_URL: "http://kgateway.kgateway-system.svc.cluster.local:80"
+
+externalSecret:
+  enabled: false
+
+# Set at install time: helm install frontend ... --set targetGroupArn=<arn>
+targetGroupArn: ""
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+hpa:
+  minReplicas: 2
+  maxReplicas: 6
+  cpuTargetUtilization: 60
+  memoryTargetUtilization: 75
+
+livenessProbe:
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+networkPolicy:
+  enabled: true

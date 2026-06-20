@@ -1,0 +1,6 @@
+apiVersion: v2
+name: ai-assistant-service
+description: ShopMesh AI Assistant Service — conversational shopping via Bedrock Converse API
+type: application
+version: 0.1.0
+appVersion: "latest"

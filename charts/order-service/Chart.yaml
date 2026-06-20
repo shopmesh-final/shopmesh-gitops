@@ -1,0 +1,6 @@
+apiVersion: v2
+name: order-service
+description: ShopMesh Order Service — order lifecycle, SQS/SNS integration
+type: application
+version: 0.1.0
+appVersion: "latest"

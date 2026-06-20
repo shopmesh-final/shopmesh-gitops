@@ -1,0 +1,15 @@
+{{- if .Values.targetGroupArn }}
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  name: {{ .Release.Name }}-tgb
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  serviceRef:
+    name: {{ .Release.Name }}
+    port: {{ .Values.service.port }}
+  targetGroupARN: {{ .Values.targetGroupArn }}
+  targetType: ip
+{{- end }}

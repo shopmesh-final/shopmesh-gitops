@@ -1,0 +1,65 @@
+namespace: production
+replicaCount: 2
+
+image:
+  repository: 686591366739.dkr.ecr.us-east-1.amazonaws.com/shopmesh/product-service
+  tag: latest
+  pullPolicy: Always
+
+service:
+  port: 3002
+
+serviceAccount:
+  create: true
+  roleArn: "arn:aws:iam::686591366739:role/shopmesh-irsa-product-service"
+
+config:
+  PORT: "3002"
+  NODE_ENV: "production"
+  LOCAL_MODE: "false"
+  AWS_REGION: "us-east-1"
+  DYNAMODB_PRODUCTS_TABLE: "shopmesh-products"
+  SNS_ORDERS_TOPIC_ARN: "arn:aws:sns:us-east-1:686591366739:shopmesh-orders"
+  SNS_ALERTS_TOPIC_ARN: "arn:aws:sns:us-east-1:686591366739:shopmesh-alerts"
+  S3_PRODUCT_IMAGES_BUCKET: "shopmesh-product-images-686591366739"
+  AUTH_SERVICE_URL: "http://auth-service.production.svc.cluster.local:3001"
+
+externalSecret:
+  enabled: true
+  refreshInterval: "1h"
+  secretStoreName: "aws-secrets-manager"
+  secretStoreKind: "ClusterSecretStore"
+  remoteSecretName: "shopmesh/jwt-secret"
+  secretKeys:
+    - secretKey: JWT_SECRET
+      remoteKey: "shopmesh/jwt-secret"
+      property: "jwt_secret"
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+hpa:
+  minReplicas: 2
+  maxReplicas: 6
+  cpuTargetUtilization: 60
+  memoryTargetUtilization: 75
+
+livenessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  initialDelaySeconds: 15
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+networkPolicy:
+  enabled: true

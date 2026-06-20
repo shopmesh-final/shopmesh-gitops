@@ -1,0 +1,57 @@
+namespace: production
+replicaCount: 2
+
+image:
+  repository: 686591366739.dkr.ecr.us-east-1.amazonaws.com/shopmesh/order-service
+  tag: latest
+  pullPolicy: Always
+
+service:
+  port: 3003
+
+serviceAccount:
+  create: true
+  roleArn: "arn:aws:iam::686591366739:role/shopmesh-irsa-order-service"
+
+config:
+  PORT: "3003"
+  LOCAL_MODE: "false"
+  AWS_REGION: "us-east-1"
+  DYNAMODB_ORDERS_TABLE: "shopmesh-orders"
+  SQS_ORDER_QUEUE_URL: "https://sqs.us-east-1.amazonaws.com/686591366739/shopmesh-order-processing"
+  SNS_ORDERS_TOPIC_ARN: "arn:aws:sns:us-east-1:686591366739:shopmesh-orders"
+  SNS_ALERTS_TOPIC_ARN: "arn:aws:sns:us-east-1:686591366739:shopmesh-alerts"
+  AUTH_SERVICE_URL: "http://auth-service.production.svc.cluster.local:3001"
+  PRODUCT_SERVICE_URL: "http://product-service.production.svc.cluster.local:3002"
+
+externalSecret:
+  enabled: false
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+hpa:
+  minReplicas: 2
+  maxReplicas: 6
+  cpuTargetUtilization: 60
+  memoryTargetUtilization: 75
+
+livenessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  initialDelaySeconds: 15
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+networkPolicy:
+  enabled: true

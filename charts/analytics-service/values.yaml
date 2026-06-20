@@ -1,0 +1,56 @@
+namespace: production
+replicaCount: 2
+
+image:
+  repository: 686591366739.dkr.ecr.us-east-1.amazonaws.com/shopmesh/analytics-service
+  tag: latest
+  pullPolicy: Always
+
+service:
+  port: 3004
+
+serviceAccount:
+  create: true
+  roleArn: "arn:aws:iam::686591366739:role/shopmesh-irsa-analytics-service"
+
+config:
+  PORT: "3004"
+  LOCAL_MODE: "false"
+  AWS_REGION: "us-east-1"
+  DYNAMODB_ORDERS_TABLE: "shopmesh-orders"
+  DYNAMODB_USERS_TABLE: "shopmesh-users"
+  DYNAMODB_PRODUCTS_TABLE: "shopmesh-products"
+  AUTH_SERVICE_URL: "http://auth-service.production.svc.cluster.local:3001"
+  BEDROCK_MODEL_ID: "amazon.nova-lite-v1:0"
+
+externalSecret:
+  enabled: false
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+hpa:
+  minReplicas: 2
+  maxReplicas: 6
+  cpuTargetUtilization: 60
+  memoryTargetUtilization: 75
+
+livenessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  initialDelaySeconds: 15
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+networkPolicy:
+  enabled: true
