@@ -5,7 +5,7 @@ metadata:
   namespace: production
 spec:
   parentRefs:
-    - name: shopmesh-gateway
+    - name: kgateway
       namespace: kgateway-system
   rules:
     - matches:

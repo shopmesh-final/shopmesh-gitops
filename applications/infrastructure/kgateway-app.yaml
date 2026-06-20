@@ -7,19 +7,10 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-  sources:
-    - repoURL: https://kgateway-dev.github.io/helm-charts
-      chart: kgateway
-      targetRevision: 1.0.3
-      helm:
-        releaseName: kgateway
-        values: |
-          fullnameOverride: kgateway
-          service:
-            type: ClusterIP
-    - repoURL: https://github.com/shopmesh-final/shopmesh-gitops.git
-      targetRevision: HEAD
-      path: infrastructure/kgateway
+  source:
+    repoURL: https://github.com/shopmesh-final/shopmesh-gitops.git
+    targetRevision: HEAD
+    path: infrastructure/kgateway
   destination:
     server: https://kubernetes.default.svc
     namespace: kgateway-system
