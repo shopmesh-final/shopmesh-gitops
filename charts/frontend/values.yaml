@@ -13,6 +13,12 @@ serviceAccount:
   create: true
   roleArn: ""   # frontend does not call AWS APIs directly
 
+podAnnotations:
+  instrumentation.opentelemetry.io/inject-dotnet: "false"
+  instrumentation.opentelemetry.io/inject-python: "false"
+  instrumentation.opentelemetry.io/inject-java: "false"
+  instrumentation.opentelemetry.io/inject-nodejs: "false"
+
 config:
   INTERNAL_ALB_URL: "http://kgateway.kgateway-system.svc.cluster.local:80"
 
