@@ -17,7 +17,7 @@ spec:
           fullnameOverride: kgateway
           service:
             type: ClusterIP
-    - repoURL: https://github.com/YOUR_ORG/shopmesh-gitops
+    - repoURL: https://github.com/shopmesh-final/shopmesh-gitops.git
       targetRevision: HEAD
       path: infrastructure/kgateway
   destination:

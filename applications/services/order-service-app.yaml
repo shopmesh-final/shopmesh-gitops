@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/YOUR_ORG/shopmesh-gitops
+    repoURL: https://github.com/shopmesh-final/shopmesh-gitops.git
     targetRevision: HEAD
     path: charts/order-service
     helm:
