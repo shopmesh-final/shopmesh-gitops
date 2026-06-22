@@ -1,3 +1,4 @@
 replicaCount: 2
 image:
   tag: 40ddaf5
+targetGroupArn: "arn:aws:elasticloadbalancing:us-east-1:242969680553:targetgroup/shopmesh-frontend-tg/a637cce69cf0373f"
