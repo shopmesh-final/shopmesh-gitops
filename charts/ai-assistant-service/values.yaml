@@ -1,18 +1,14 @@
 namespace: production
 replicaCount: 2
-
 image:
   repository: 242969680553.dkr.ecr.us-east-1.amazonaws.com/shopmesh/ai-assistant-service
-  tag: latest
+  tag: 041d490
   pullPolicy: Always
-
 service:
   port: 3005
-
 serviceAccount:
   create: true
   roleArn: "arn:aws:iam::242969680553:role/shopmesh-irsa-ai-assistant-service"
-
 config:
   PORT: "3005"
   LOCAL_MODE: "false"
@@ -21,10 +17,8 @@ config:
   AUTH_SERVICE_URL: "http://auth-service.production.svc.cluster.local:3001"
   PRODUCT_SERVICE_URL: "http://product-service.production.svc.cluster.local:3002"
   ORDER_SERVICE_URL: "http://order-service.production.svc.cluster.local:3003"
-
 externalSecret:
   enabled: false
-
 resources:
   requests:
     cpu: "100m"
@@ -32,24 +26,20 @@ resources:
   limits:
     cpu: "500m"
     memory: "512Mi"
-
 hpa:
   minReplicas: 2
   maxReplicas: 6
   cpuTargetUtilization: 60
   memoryTargetUtilization: 75
-
 livenessProbe:
   initialDelaySeconds: 60
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 3
-
 readinessProbe:
   initialDelaySeconds: 30
   periodSeconds: 5
   timeoutSeconds: 3
   failureThreshold: 3
-
 networkPolicy:
   enabled: true
