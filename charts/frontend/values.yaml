@@ -15,7 +15,7 @@ podAnnotations:
   instrumentation.opentelemetry.io/inject-java: "false"
   instrumentation.opentelemetry.io/inject-nodejs: "false"
 config:
-  INTERNAL_ALB_URL: "http://kgateway.kgateway-system.svc.cluster.local:80"
+  INTERNAL_ALB_URL: "http://prod.kgateway-system.svc.cluster.local:80"
 externalSecret:
   enabled: false
 # Set at install time: helm install frontend ... --set targetGroupArn=<arn>

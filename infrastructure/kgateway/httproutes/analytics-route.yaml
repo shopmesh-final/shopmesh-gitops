@@ -5,7 +5,7 @@ metadata:
   namespace: production
 spec:
   parentRefs:
-    - name: kgateway
+    - name: prod
       namespace: kgateway-system
   rules:
     - matches:
