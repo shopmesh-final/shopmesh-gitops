@@ -1,18 +1,14 @@
 namespace: production
 replicaCount: 2
-
 image:
   repository: 242969680553.dkr.ecr.us-east-1.amazonaws.com/shopmesh/product-service
-  tag: latest
+  tag: 8630b5e
   pullPolicy: Always
-
 service:
   port: 3002
-
 serviceAccount:
   create: true
   roleArn: "arn:aws:iam::242969680553:role/shopmesh-irsa-product-service"
-
 config:
   PORT: "3002"
   NODE_ENV: "production"
@@ -23,7 +19,6 @@ config:
   SNS_ALERTS_TOPIC_ARN: "arn:aws:sns:us-east-1:242969680553:shopmesh-alerts"
   S3_PRODUCT_IMAGES_BUCKET: "shopmesh-product-images-242969680553"
   AUTH_SERVICE_URL: "http://auth-service.production.svc.cluster.local:3001"
-
 externalSecret:
   enabled: true
   refreshInterval: "1h"
@@ -34,7 +29,6 @@ externalSecret:
     - secretKey: JWT_SECRET
       remoteKey: "shopmesh/jwt-secret"
       property: "jwt_secret"
-
 resources:
   requests:
     cpu: "100m"
@@ -42,24 +36,20 @@ resources:
   limits:
     cpu: "500m"
     memory: "512Mi"
-
 hpa:
   minReplicas: 2
   maxReplicas: 6
   cpuTargetUtilization: 60
   memoryTargetUtilization: 75
-
 livenessProbe:
   initialDelaySeconds: 30
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 3
-
 readinessProbe:
   initialDelaySeconds: 15
   periodSeconds: 5
   timeoutSeconds: 3
   failureThreshold: 3
-
 networkPolicy:
   enabled: true
