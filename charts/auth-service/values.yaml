@@ -1,18 +1,14 @@
 namespace: production
 replicaCount: 2
-
 image:
   repository: 242969680553.dkr.ecr.us-east-1.amazonaws.com/shopmesh/auth-service
-  tag: latest
+  tag: 40ddaf5
   pullPolicy: Always
-
 service:
   port: 3001
-
 serviceAccount:
   create: true
   roleArn: "arn:aws:iam::242969680553:role/shopmesh-irsa-auth-service"
-
 config:
   PORT: "3001"
   NODE_ENV: "production"
@@ -20,7 +16,6 @@ config:
   AWS_REGION: "us-east-1"
   DYNAMODB_USERS_TABLE: "shopmesh-users"
   JWT_EXPIRES_IN: "24h"
-
 externalSecret:
   enabled: true
   refreshInterval: "1h"
@@ -31,7 +26,6 @@ externalSecret:
     - secretKey: JWT_SECRET
       remoteKey: "shopmesh/jwt-secret"
       property: "jwt_secret"
-
 resources:
   requests:
     cpu: "100m"
@@ -39,24 +33,20 @@ resources:
   limits:
     cpu: "500m"
     memory: "512Mi"
-
 hpa:
   minReplicas: 2
   maxReplicas: 6
   cpuTargetUtilization: 60
   memoryTargetUtilization: 75
-
 livenessProbe:
   initialDelaySeconds: 30
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 3
-
 readinessProbe:
   initialDelaySeconds: 15
   periodSeconds: 5
   timeoutSeconds: 3
   failureThreshold: 3
-
 networkPolicy:
   enabled: true
