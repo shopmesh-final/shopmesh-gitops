@@ -2,7 +2,7 @@ namespace: production
 replicaCount: 2
 image:
   repository: 242969680553.dkr.ecr.us-east-1.amazonaws.com/shopmesh/analytics-service
-  tag: 041d490
+  tag: 40ddaf5
   pullPolicy: Always
 service:
   port: 3004
