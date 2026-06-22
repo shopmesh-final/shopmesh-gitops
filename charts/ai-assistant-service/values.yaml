@@ -2,7 +2,7 @@ namespace: production
 replicaCount: 2
 
 image:
-  repository: 686591366739.dkr.ecr.us-east-1.amazonaws.com/shopmesh/ai-assistant-service
+  repository: 242969680553.dkr.ecr.us-east-1.amazonaws.com/shopmesh/ai-assistant-service
   tag: latest
   pullPolicy: Always
 
@@ -11,7 +11,7 @@ service:
 
 serviceAccount:
   create: true
-  roleArn: "arn:aws:iam::686591366739:role/shopmesh-irsa-ai-assistant-service"
+  roleArn: "arn:aws:iam::242969680553:role/shopmesh-irsa-ai-assistant-service"
 
 config:
   PORT: "3005"

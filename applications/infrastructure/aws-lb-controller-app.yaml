@@ -19,7 +19,7 @@ spec:
           create: true
           name: aws-load-balancer-controller
           annotations:
-            eks.amazonaws.com/role-arn: "arn:aws:iam::686591366739:role/shopmesh-irsa-aws-lb-controller"
+            eks.amazonaws.com/role-arn: "arn:aws:iam::242969680553:role/shopmesh-irsa-aws-lb-controller"
         region: us-east-1
   destination:
     server: https://kubernetes.default.svc

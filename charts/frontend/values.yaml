@@ -2,7 +2,7 @@ namespace: production
 replicaCount: 2
 
 image:
-  repository: 686591366739.dkr.ecr.us-east-1.amazonaws.com/shopmesh/frontend
+  repository: 242969680553.dkr.ecr.us-east-1.amazonaws.com/shopmesh/frontend
   tag: latest
   pullPolicy: Always
 

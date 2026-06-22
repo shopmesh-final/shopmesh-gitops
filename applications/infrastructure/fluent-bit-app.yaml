@@ -31,7 +31,7 @@ spec:
         serviceAccount:
           name: fluent-bit
           annotations:
-            eks.amazonaws.com/role-arn: "arn:aws:iam::686591366739:role/shopmesh-irsa-fluent-bit"
+            eks.amazonaws.com/role-arn: "arn:aws:iam::242969680553:role/shopmesh-irsa-fluent-bit"
   destination:
     server: https://kubernetes.default.svc
     namespace: amazon-cloudwatch
