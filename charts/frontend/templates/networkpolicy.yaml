@@ -19,6 +19,8 @@ spec:
             matchLabels:
               name: kgateway-system
         - podSelector: {}
+        - ipBlock:
+            cidr: {{ .Values.networkPolicy.vpcCidr }}
       ports:
         - port: {{ .Values.service.port }}
           protocol: TCP
