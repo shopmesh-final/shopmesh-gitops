@@ -7,15 +7,10 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-  sources:
-    - repoURL: https://kgateway.dev/charts
-      chart: kgateway
-      targetRevision: v2.3.1
-      helm:
-        releaseName: kgateway
-    - repoURL: https://github.com/shopmesh-final/shopmesh-gitops.git
-      targetRevision: HEAD
-      path: infrastructure/kgateway
+  source:
+    repoURL: https://github.com/shopmesh-final/shopmesh-gitops.git
+    targetRevision: HEAD
+    path: infrastructure/kgateway
   destination:
     server: https://kubernetes.default.svc
     namespace: kgateway-system
