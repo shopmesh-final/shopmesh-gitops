@@ -14,6 +14,8 @@ config:
   LOCAL_MODE: "false"
   AWS_REGION: "us-east-1"
   BEDROCK_MODEL_ID: "amazon.nova-lite-v1:0"
+  BEDROCK_CROSS_ACCOUNT_ROLE_ARN: "arn:aws:iam::686591366739:role/shopmesh-bedrock-cross-account"
+  BEDROCK_REGION: "us-east-1"
   AUTH_SERVICE_URL: "http://auth-service.production.svc.cluster.local:3001"
   PRODUCT_SERVICE_URL: "http://product-service.production.svc.cluster.local:3002"
   ORDER_SERVICE_URL: "http://order-service.production.svc.cluster.local:3003"
