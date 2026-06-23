@@ -1,0 +1,13 @@
+{{- if .Values.grafanaTGBArn }}
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  name: grafana-tgb
+  namespace: {{ .Values.namespace }}
+spec:
+  serviceRef:
+    name: monitoring-grafana
+    port: 80
+  targetGroupARN: {{ .Values.grafanaTGBArn }}
+  targetType: ip
+{{- end }}

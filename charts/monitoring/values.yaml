@@ -1,1 +1,4 @@
 namespace: monitoring
+# ARN of the ALB target group for Grafana — set after terraform apply
+# terraform output grafana_target_group_arn
+grafanaTGBArn: ""
