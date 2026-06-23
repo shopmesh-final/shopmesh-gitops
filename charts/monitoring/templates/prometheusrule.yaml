@@ -1,0 +1,37 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: shopmesh-alerts
+  namespace: {{ .Values.namespace }}
+  labels:
+    release: monitoring
+spec:
+  groups:
+    - name: shopmesh.critical
+      rules:
+        - alert: NodeNotReady
+          expr: kube_node_status_condition{condition="Ready",status="true"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Node {{ `{{ $labels.node }}` }} is not ready"
+            description: "EKS node has been not-ready for 5+ minutes"
+
+        - alert: PodCrashLoopBackOff
+          expr: kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff",namespace="production"} == 1
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Pod {{ `{{ $labels.pod }}` }} is crash-looping"
+            description: "Pod in production namespace has been in CrashLoopBackOff for 5+ minutes"
+
+        - alert: ApplicationDown
+          expr: kube_deployment_status_replicas_available{namespace="production"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Deployment {{ `{{ $labels.deployment }}` }} has 0 available replicas"
+            description: "A production service has no running pods"

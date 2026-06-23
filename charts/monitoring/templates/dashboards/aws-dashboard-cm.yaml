@@ -1,0 +1,328 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aws-infrastructure-dashboard
+  namespace: {{ .Values.namespace }}
+  labels:
+    grafana_dashboard: "1"
+  annotations:
+    grafana_folder: "ShopMesh AWS"
+data:
+  aws-infrastructure-dashboard.json: |
+    {
+      "title": "ShopMesh AWS Infrastructure",
+      "uid": "shopmesh-aws-infra",
+      "schemaVersion": 38,
+      "version": 1,
+      "refresh": "1m",
+      "time": { "from": "now-3h", "to": "now" },
+      "tags": ["shopmesh", "aws", "cloudwatch"],
+      "panels": [
+        {
+          "id": 1,
+          "title": "EKS Node CPU Utilization (%)",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+          "datasource": { "type": "cloudwatch", "uid": "${DS_CLOUDWATCH}" },
+          "targets": [{
+            "alias": "{{NodeName}}",
+            "dimensions": { "ClusterName": "shopmesh-prod" },
+            "expression": "",
+            "id": "",
+            "matchExact": true,
+            "metricEditorMode": 0,
+            "metricName": "node_cpu_utilization",
+            "metricQueryType": 0,
+            "namespace": "ContainerInsights",
+            "period": "60",
+            "refId": "A",
+            "region": "us-east-1",
+            "statistic": "Average"
+          }],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "thresholds": {
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 70 },
+                  { "color": "red", "value": 85 }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "title": "EKS Node Memory Utilization (%)",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+          "datasource": { "type": "cloudwatch", "uid": "${DS_CLOUDWATCH}" },
+          "targets": [{
+            "alias": "{{NodeName}}",
+            "dimensions": { "ClusterName": "shopmesh-prod" },
+            "metricName": "node_memory_utilization",
+            "namespace": "ContainerInsights",
+            "period": "60",
+            "refId": "A",
+            "region": "us-east-1",
+            "statistic": "Average"
+          }],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "thresholds": {
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 75 },
+                  { "color": "red", "value": 90 }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "title": "ALB Request Count",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 8 },
+          "datasource": { "type": "cloudwatch", "uid": "${DS_CLOUDWATCH}" },
+          "targets": [{
+            "alias": "Requests/min",
+            "dimensions": {},
+            "metricName": "RequestCount",
+            "namespace": "AWS/ApplicationELB",
+            "period": "60",
+            "refId": "A",
+            "region": "us-east-1",
+            "statistic": "Sum"
+          }],
+          "fieldConfig": { "defaults": { "unit": "short" } }
+        },
+        {
+          "id": 4,
+          "title": "ALB Response Time P99 (ms)",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 8 },
+          "datasource": { "type": "cloudwatch", "uid": "${DS_CLOUDWATCH}" },
+          "targets": [{
+            "alias": "P99 Latency",
+            "dimensions": {},
+            "metricName": "TargetResponseTime",
+            "namespace": "AWS/ApplicationELB",
+            "period": "60",
+            "refId": "A",
+            "region": "us-east-1",
+            "statistic": "p99"
+          }],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "thresholds": {
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 0.5 },
+                  { "color": "red", "value": 2 }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "title": "ALB HTTP Errors",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 8 },
+          "datasource": { "type": "cloudwatch", "uid": "${DS_CLOUDWATCH}" },
+          "targets": [
+            {
+              "alias": "4XX",
+              "dimensions": {},
+              "metricName": "HTTPCode_ELB_4XX_Count",
+              "namespace": "AWS/ApplicationELB",
+              "period": "60",
+              "refId": "A",
+              "region": "us-east-1",
+              "statistic": "Sum"
+            },
+            {
+              "alias": "5XX",
+              "dimensions": {},
+              "metricName": "HTTPCode_ELB_5XX_Count",
+              "namespace": "AWS/ApplicationELB",
+              "period": "60",
+              "refId": "B",
+              "region": "us-east-1",
+              "statistic": "Sum"
+            }
+          ],
+          "fieldConfig": { "defaults": { "unit": "short" } }
+        },
+        {
+          "id": 6,
+          "title": "Frontend Target Health",
+          "type": "stat",
+          "gridPos": { "h": 4, "w": 6, "x": 0, "y": 16 },
+          "datasource": { "type": "cloudwatch", "uid": "${DS_CLOUDWATCH}" },
+          "targets": [
+            {
+              "alias": "Healthy",
+              "dimensions": {},
+              "metricName": "HealthyHostCount",
+              "namespace": "AWS/ApplicationELB",
+              "period": "60",
+              "refId": "A",
+              "region": "us-east-1",
+              "statistic": "Average"
+            },
+            {
+              "alias": "Unhealthy",
+              "dimensions": {},
+              "metricName": "UnHealthyHostCount",
+              "namespace": "AWS/ApplicationELB",
+              "period": "60",
+              "refId": "B",
+              "region": "us-east-1",
+              "statistic": "Average"
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "title": "AI Assistant — Request Count",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 20 },
+          "datasource": { "type": "cloudwatch", "uid": "${DS_CLOUDWATCH}" },
+          "targets": [{
+            "alias": "AI Requests",
+            "dimensions": {},
+            "expression": "filter @logStream like /ai-assistant/ | filter @message like /\\[BEDROCK\\] Converse API call/ | stats count() as requests by bin(1m)",
+            "id": "q1",
+            "logGroups": [{ "arn": "arn:aws:logs:us-east-1:242969680553:log-group:/shopmesh/eks", "name": "/shopmesh/eks" }],
+            "metricEditorMode": 0,
+            "metricQueryType": 1,
+            "namespace": "",
+            "period": "60",
+            "queryMode": "Logs",
+            "refId": "A",
+            "region": "us-east-1",
+            "statsGroups": ["bin(1m)"]
+          }],
+          "fieldConfig": { "defaults": { "unit": "short" } }
+        },
+        {
+          "id": 8,
+          "title": "AI Assistant — Errors & Bedrock Throttling",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 20 },
+          "datasource": { "type": "cloudwatch", "uid": "${DS_CLOUDWATCH}" },
+          "targets": [
+            {
+              "alias": "Bedrock Errors",
+              "expression": "filter @logStream like /ai-assistant/ | filter @message like /\\[BEDROCK\\] Converse API error/ | stats count() as errors by bin(1m)",
+              "id": "q2",
+              "logGroups": [{ "arn": "arn:aws:logs:us-east-1:242969680553:log-group:/shopmesh/eks", "name": "/shopmesh/eks" }],
+              "queryMode": "Logs",
+              "refId": "A",
+              "region": "us-east-1",
+              "statsGroups": ["bin(1m)"]
+            },
+            {
+              "alias": "Throttling",
+              "expression": "filter @logStream like /ai-assistant/ | filter @message like /ThrottlingException/ | stats count() as throttles by bin(1m)",
+              "id": "q3",
+              "logGroups": [{ "arn": "arn:aws:logs:us-east-1:242969680553:log-group:/shopmesh/eks", "name": "/shopmesh/eks" }],
+              "queryMode": "Logs",
+              "refId": "B",
+              "region": "us-east-1",
+              "statsGroups": ["bin(1m)"]
+            }
+          ],
+          "fieldConfig": { "defaults": { "unit": "short" } }
+        },
+        {
+          "id": 9,
+          "title": "Application Error Logs (All Services)",
+          "type": "logs",
+          "gridPos": { "h": 10, "w": 24, "x": 0, "y": 28 },
+          "datasource": { "type": "cloudwatch", "uid": "${DS_CLOUDWATCH}" },
+          "targets": [{
+            "expression": "filter @logStream like /production/ | filter level = \"ERROR\" or @message like /ERROR/ or @message like /Exception/ | sort @timestamp desc | limit 50",
+            "id": "q4",
+            "logGroups": [{ "arn": "arn:aws:logs:us-east-1:242969680553:log-group:/shopmesh/eks", "name": "/shopmesh/eks" }],
+            "queryMode": "Logs",
+            "refId": "A",
+            "region": "us-east-1"
+          }],
+          "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showTime": true }
+        },
+        {
+          "id": 10,
+          "title": "SQS Order Queue Depth",
+          "type": "timeseries",
+          "gridPos": { "h": 6, "w": 12, "x": 0, "y": 38 },
+          "datasource": { "type": "cloudwatch", "uid": "${DS_CLOUDWATCH}" },
+          "targets": [
+            {
+              "alias": "Visible",
+              "dimensions": { "QueueName": "shopmesh-order-processing" },
+              "metricName": "ApproximateNumberOfMessagesVisible",
+              "namespace": "AWS/SQS",
+              "period": "60",
+              "refId": "A",
+              "region": "us-east-1",
+              "statistic": "Maximum"
+            },
+            {
+              "alias": "DLQ",
+              "dimensions": { "QueueName": "shopmesh-order-processing-dlq" },
+              "metricName": "ApproximateNumberOfMessagesVisible",
+              "namespace": "AWS/SQS",
+              "period": "60",
+              "refId": "B",
+              "region": "us-east-1",
+              "statistic": "Maximum"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "thresholds": {
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "red", "value": 1 }
+                ]
+              }
+            },
+            "overrides": [{ "matcher": { "id": "byName", "options": "DLQ" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }] }]
+          }
+        },
+        {
+          "id": 11,
+          "title": "DynamoDB Throttled Requests",
+          "type": "timeseries",
+          "gridPos": { "h": 6, "w": 12, "x": 12, "y": 38 },
+          "datasource": { "type": "cloudwatch", "uid": "${DS_CLOUDWATCH}" },
+          "targets": [{
+            "alias": "Throttles",
+            "dimensions": {},
+            "metricName": "UserErrors",
+            "namespace": "AWS/DynamoDB",
+            "period": "60",
+            "refId": "A",
+            "region": "us-east-1",
+            "statistic": "Sum"
+          }],
+          "fieldConfig": { "defaults": { "unit": "short" } }
+        }
+      ],
+      "templating": {
+        "list": [{
+          "name": "DS_CLOUDWATCH",
+          "type": "datasource",
+          "query": "cloudwatch",
+          "current": { "selected": false, "text": "CloudWatch", "value": "CloudWatch" },
+          "hide": 2
+        }]
+      }
+    }
