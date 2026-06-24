@@ -18,6 +18,7 @@ config:
   DYNAMODB_PRODUCTS_TABLE: "shopmesh-products"
   AUTH_SERVICE_URL: "http://auth-service.production.svc.cluster.local:3001"
   BEDROCK_MODEL_ID: "amazon.nova-lite-v1:0"
+  BEDROCK_CROSS_ACCOUNT_ROLE_ARN: "arn:aws:iam::686591366739:role/shopmesh-bedrock-cross-account"
 externalSecret:
   enabled: false
 resources:
@@ -44,3 +45,4 @@ readinessProbe:
   failureThreshold: 3
 networkPolicy:
   enabled: true
+##
